@@ -143,7 +143,7 @@ else:
 
 
 # ==========================================
-# DISPLAY SHAP EXPLANATION
+# HUMAN-READABLE SHAP EXPLANATION
 # ==========================================
 
 print("\n===================================")
@@ -152,17 +152,138 @@ print("===================================")
 
 print("Top factors influencing the model:\n")
 
-for _, row in feature_contributions.head(3).iterrows():
+
+def explain_feature(feature, value, shap_value):
+    """
+    Convert a technical SHAP result into
+    a human-readable explanation.
+    """
+
+    if feature == "transactions_last_hour":
+
+        if shap_value > 0:
+            return (
+                f"High transaction frequency: "
+                f"{int(value)} transactions occurred "
+                f"in the last hour."
+            )
+        else:
+            return (
+                f"Normal transaction frequency: "
+                f"{int(value)} transactions occurred "
+                f"in the last hour."
+            )
+
+    elif feature == "failed_attempts":
+
+        if shap_value > 0:
+            return (
+                f"Multiple failed attempts: "
+                f"{int(value)} failed attempts were detected."
+            )
+        else:
+            return (
+                f"Low number of failed attempts: "
+                f"{int(value)} failed attempts were detected."
+            )
+
+    elif feature == "new_device":
+
+        if value == 1:
+            if shap_value > 0:
+                return (
+                    "New device detected: "
+                    "the transaction was made from a new device."
+                )
+            else:
+                return (
+                    "New device detected, but this feature "
+                    "did not strongly increase the fraud prediction."
+                )
+        else:
+            return (
+                "Known device: the transaction was made "
+                "from a previously recognized device."
+            )
+
+    elif feature == "location_changed":
+
+        if value == 1:
+            return (
+                "Location change detected: "
+                "the transaction occurred from a changed location."
+            )
+        else:
+            return (
+                "No location change was detected."
+            )
+
+    elif feature == "amount":
+
+        if shap_value > 0:
+            return (
+                f"Transaction amount of ₹{value:.2f} "
+                "increased the fraud prediction."
+            )
+        else:
+            return (
+                f"Transaction amount of ₹{value:.2f} "
+                "did not increase the fraud prediction."
+            )
+
+    elif feature == "account_age_days":
+
+        if shap_value > 0:
+            return (
+                f"Account age of {int(value)} days "
+                "increased the fraud prediction."
+            )
+        else:
+            return (
+                f"Account age of {int(value)} days "
+                "reduced the fraud prediction."
+            )
+
+    elif feature == "time_since_last_transaction":
+
+        if shap_value > 0:
+            return (
+                f"Only {value:.1f} seconds since the previous "
+                "transaction increased the fraud prediction."
+            )
+        else:
+            return (
+                f"{value:.1f} seconds since the previous "
+                "transaction reduced the fraud prediction."
+            )
+
+    return (
+        f"{feature} influenced the model's prediction."
+    )
+
+
+# Display the three strongest SHAP contributors
+for rank, (_, row) in enumerate(
+    feature_contributions.head(3).iterrows(),
+    start=1
+):
+
+    explanation = explain_feature(
+        row["feature"],
+        row["value"],
+        row["shap_value"]
+    )
 
     if row["shap_value"] > 0:
-        direction = "towards FRAUD"
+        direction = "↑ FRAUD RISK"
     else:
-        direction = "towards LEGITIMATE"
+        direction = "↓ FRAUD RISK"
 
+    print(f"{rank}. {explanation}")
+    print(f"   {direction}")
     print(
-        f"{row['feature']}: "
-        f"{direction} "
-        f"(impact: {row['shap_value']:.4f})"
+        f"   SHAP impact: "
+        f"{row['shap_value']:.4f}\n"
     )
 
 print("===================================")
