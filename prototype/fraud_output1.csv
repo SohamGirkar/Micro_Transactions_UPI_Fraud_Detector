@@ -1,0 +1,51 @@
+transaction_id,user_id,receiver_id,amount,timestamp,txns_last_24h,avg_amt_last_7d,fraud_status,risk_score,explanation
+TXN025,U025,R115,80,29/01/2026 13:00:00,4,70,NORMAL,0.0,
+TXN026,U026,R116,120,29/01/2026 13:30:00,10,105,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN027,U027,R999,35,29/01/2026 14:00:00,15,40,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN028,U028,R117,280,29/01/2026 14:30:00,5,250,NORMAL,0.0,
+TXN029,U029,R999,50,29/01/2026 15:00:00,18,45,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN030,U030,R118,65,29/01/2026 15:30:00,8,60,NORMAL,0.0,
+TXN031,U031,R119,15,29/01/2026 16:00:00,25,22,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN032,U032,R120,95,29/01/2026 16:30:00,6,88,NORMAL,0.0,
+TXN033,U033,R999,25,29/01/2026 17:00:00,30,30,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN034,U034,R121,180,29/01/2026 17:30:00,3,165,NORMAL,0.0,
+TXN035,U035,R999,10,29/01/2026 18:00:00,40,15,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN036,U036,R122,220,29/01/2026 18:30:00,7,200,NORMAL,0.0,
+TXN037,U037,R123,40,29/01/2026 19:00:00,12,45,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN038,U038,R999,75,29/01/2026 19:30:00,20,80,NORMAL,0.6,High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN039,U039,R124,300,29/01/2026 20:00:00,2,285,NORMAL,0.0,
+TXN040,U040,R125,110,29/01/2026 20:30:00,9,100,NORMAL,0.0,
+TXN041,U041,R999,5,29/01/2026 21:00:00,50,12,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN042,U042,R126,140,29/01/2026 21:30:00,11,130,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN043,U043,R127,20,29/01/2026 22:00:00,28,25,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN044,U044,R999,90,29/01/2026 22:30:00,15,85,NORMAL,0.6,High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN045,U045,R128,350,29/01/2026 23:00:00,4,330,NORMAL,0.0,
+TXN046,U046,R129,60,29/01/2026 23:30:00,13,55,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN047,U047,R999,100,30/01/2026 00:00:00,7,95,NORMAL,0.2,Multiple users sending to same receiver
+TXN048,U048,R130,150,30/01/2026 00:30:00,17,140,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN049,U049,R999,8,30/01/2026 01:00:00,35,10,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN050,U050,R131,450,30/01/2026 01:30:00,2,420,NORMAL,0.0,
+TXN051,U051,R132,30,30/01/2026 02:00:00,22,35,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN052,U052,R999,130,30/01/2026 02:30:00,10,125,NORMAL,0.6,High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN053,U053,R133,70,30/01/2026 03:00:00,14,75,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN054,U054,R999,200,30/01/2026 03:30:00,5,185,NORMAL,0.2,Multiple users sending to same receiver
+TXN055,U055,R134,45,30/01/2026 04:00:00,19,50,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN056,U056,R135,160,30/01/2026 04:30:00,8,155,NORMAL,0.0,
+TXN057,U057,R999,18,30/01/2026 05:00:00,28,20,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN058,U058,R136,250,30/01/2026 05:30:00,3,240,NORMAL,0.0,
+TXN059,U059,R137,55,30/01/2026 06:00:00,16,60,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN060,U060,R999,320,30/01/2026 06:30:00,6,300,NORMAL,0.2,Multiple users sending to same receiver
+TXN061,U061,R138,12,30/01/2026 07:00:00,32,15,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN062,U062,R139,90,30/01/2026 07:30:00,11,95,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN063,U063,R999,40,30/01/2026 08:00:00,21,45,FRAUD,1.0,Low transaction amount; High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN064,U064,R140,270,30/01/2026 08:30:00,4,260,NORMAL,0.0,
+TXN065,U065,R141,85,30/01/2026 09:00:00,13,80,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN066,U066,R999,170,30/01/2026 09:30:00,7,165,NORMAL,0.2,Multiple users sending to same receiver
+TXN067,U067,R142,25,30/01/2026 10:00:00,26,30,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN068,U068,R143,380,30/01/2026 10:30:00,2,350,NORMAL,0.0,
+TXN069,U069,R999,65,30/01/2026 11:00:00,18,70,NORMAL,0.6,High transaction frequency in last 24 hours; Multiple users sending to same receiver
+TXN070,U070,R144,190,30/01/2026 11:30:00,9,180,NORMAL,0.0,
+TXN071,U071,R145,50,30/01/2026 12:00:00,15,55,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours
+TXN072,U072,R999,105,30/01/2026 12:30:00,6,100,NORMAL,0.2,Multiple users sending to same receiver
+TXN073,U073,R146,145,30/01/2026 13:00:00,12,140,NORMAL,0.4,High transaction frequency in last 24 hours
+TXN074,U074,R147,35,30/01/2026 13:30:00,20,40,FRAUD,0.8,Low transaction amount; High transaction frequency in last 24 hours

@@ -13,14 +13,14 @@ N = 10000
 
 # Transaction amount
 amount = np.random.lognormal(
-    mean=4,
+    mean=8,
     sigma=1,
     size=N
 ).round(2)
 
 # Number of transactions made by the user in the last hour
 transactions_last_hour = np.random.poisson(
-    lam=3,
+    lam=6,
     size=N
 )
 
