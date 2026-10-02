@@ -1,0 +1,7 @@
+pandas → handles our transaction dataset
+numpy → numerical calculations
+scikit-learn → machine learning
+joblib → saves our trained model
+
+-----------------------------------------------------------------------------------
+
