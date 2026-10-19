@@ -1,6 +1,6 @@
 """FastAPI wrapper around the existing UPI fraud model (fraud_model.pkl) and dataset.
 Nothing is hardcoded: stats come from transactions.csv, metrics from the saved model."""
-import os
+import hashlib, json, os
 from pathlib import Path
 import joblib, numpy as np, pandas as pd, shap
 from fastapi import FastAPI, HTTPException, Query
@@ -146,6 +146,24 @@ def model_performance():
             "split": "80 / 20", "accuracy": accuracy_score(yt, yp), "precision": precision_score(yt, yp, zero_division=0),
             "recall": recall_score(yt, yp, zero_division=0), "f1": f1_score(yt, yp, zero_division=0),
             "confusion": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)}}
+
+# --- Model comparison (added) -------------------------------------------------------------------
+# Serves the results saved by src/model_comparison.py. Nothing is retrained or recomputed here, and
+# /api/predict is untouched: Logistic Regression (fraud_model.pkl) remains the one default model.
+COMPARISON_FILE = MTF / "results" / "model_comparison.json"
+DEFAULT_ARTIFACT = MTF / "models" / "fraud_model.pkl"
+
+@app.get("/api/model-comparison")
+def model_comparison():
+    if not COMPARISON_FILE.exists():
+        raise HTTPException(404, "No saved comparison yet. Run: python UPI_Fraud_Detector/MTF/src/model_comparison.py")
+    data = json.loads(COMPARISON_FILE.read_text())   # small file, re-read so a fresh run shows without a restart
+    served = hashlib.sha256(DEFAULT_ARTIFACT.read_bytes()).hexdigest()
+    evaluated = next((m.get("artifact_sha256") for m in data["models"] if m["id"] == "lr_original"), None)
+    data["serving"] = {"model_id": "lr_original", "artifact": "models/fraud_model.pkl",
+                       "note": "/api/predict and SHAP always use this Logistic Regression; the other models are evaluation-only.",
+                       "artifact_matches_evaluated": evaluated == served}
+    return data
 
 @app.get("/api/explainability")
 def global_importance():

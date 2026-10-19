@@ -1,0 +1,72 @@
+{
+  "dataset": {
+    "rows": 10000,
+    "n_features": 7,
+    "features": [
+      "amount",
+      "transactions_last_hour",
+      "account_age_days",
+      "new_device",
+      "location_changed",
+      "failed_attempts",
+      "time_since_last_transaction"
+    ],
+    "legitimate": 4293,
+    "fraudulent": 5707,
+    "fraud_percent": 57.07,
+    "positive_class": "is_fraud == 1 (fraudulent)"
+  },
+  "split": {
+    "strategy": "train_test_split, stratified on is_fraud",
+    "test_size": 0.2,
+    "random_state": 42,
+    "train_rows": 8000,
+    "test_rows": 2000,
+    "test_fraud": 1141,
+    "test_legitimate": 859
+  },
+  "model": {
+    "name": "Original Logistic Regression",
+    "artifact": "models\\fraud_model.pkl",
+    "artifact_sha256": "be3ce8e067dba72b8165a845a40b8ef833a95fbc0e21a60597215175040c4ce8",
+    "class": "LogisticRegression",
+    "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": null,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "preprocessing": "none (raw, unscaled features)",
+    "sklearn_version_used_now": "1.9.0"
+  },
+  "test_at_0.50": {
+    "threshold": 0.5,
+    "accuracy": 0.6495,
+    "precision": 0.6656626506024096,
+    "recall": 0.7747589833479404,
+    "f1": 0.7160793843661402,
+    "specificity": 0.4831199068684517,
+    "flagged_rate": 0.664,
+    "confusion": {
+      "tn": 415,
+      "fp": 444,
+      "fn": 257,
+      "tp": 884
+    }
+  },
+  "test_ranking": {
+    "roc_auc": 0.7031737982836779,
+    "average_precision": 0.7523215191607773
+  },
+  "majority_class_baseline_accuracy": 0.5705
+}
