@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 export interface Contribution { feature: string; label: string; value: number; shap: number; direction: 'increase' | 'decrease'; severity: 'high' | 'medium' | 'low'; title: string; text: string }
 export interface Prediction { fraud_probability: number; risk_level: string; prediction: string; shap_explanations: Contribution[] }
-export async function api<T = any>(url: string, body?: unknown): Promise<T> {
-  const r = await fetch(url, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : undefined)
+export async function api<T = any>(url: string, body?: unknown, signal?: AbortSignal): Promise<T> {
+  const r = await fetch(url, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal } : { signal })
   if (!r.ok) throw new Error(`${r.status} ${r.statusText}`)
   return r.json()
 }

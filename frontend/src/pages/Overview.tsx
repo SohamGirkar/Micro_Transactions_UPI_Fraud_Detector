@@ -2,6 +2,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { useApi, inr, num } from '../api'
 import { Card, Title, Kpi, Loading, PageHeader } from '../components/ui'
 import TransactionTable from '../components/TransactionTable'
+import SimulationLauncher from '../components/SimulationLauncher'
 
 export const tip = { contentStyle: { background: '#111216', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12 }, cursor: { fill: 'rgba(255,255,255,.04)' } }
 
@@ -13,11 +14,12 @@ const Split = ({ title, pct, a, b }: { title: string; pct: number; a: string; b:
     <div key={l} className="mb-3 text-xs"><div className="flex justify-between text-zinc-400 mb-1"><span>{l}</span><span className="font-mono">{v.toFixed(1)}%</span></div>
       <div className="h-2 rounded bg-white/5"><div className="h-2 rounded transition-all duration-700" style={{ width: v + '%', background: c }} /></div></div>))}</Card>)
 
-export default function Overview() {
+export default function Overview({ onOpenSimulation }: { onOpenSimulation: (demo: boolean) => void }) {
   const { data: o, error } = useApi<any>('/api/overview'); if (!o) return <Loading error={error} />
   const s = o.signals
   return (<div>
     <PageHeader title="UPI Fraud Intelligence" sub="Real-time behavioral analysis and explainable fraud detection" />
+    <SimulationLauncher onOpen={onOpenSimulation} />
     <div className="grid grid-cols-2 xl:grid-cols-5 gap-3 mb-4">
       <Kpi label="Total transactions" value={num(o.total)} sub="from transactions.csv" />
       <Kpi label="Fraudulent" value={num(o.fraud)} accent="#ef4444" sub={`${num(o.legitimate)} legitimate`} delay={50} />
