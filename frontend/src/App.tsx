@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { LayoutDashboard, ScanSearch, LineChart, Gauge, Brain, ShieldCheck, Activity } from 'lucide-react'
-import Overview from './pages/Overview'; import Simulation from './pages/Simulation'; import Analyzer from './pages/Analyzer'; import Analytics from './pages/Analytics'; import Performance from './pages/Performance'; import Explain from './pages/Explain'
+import { LayoutDashboard, ScanSearch, LineChart, Gauge, Brain, ShieldCheck, Activity, Database } from 'lucide-react'
+import Overview from './pages/Overview'; import Simulation from './pages/Simulation'; import Analyzer from './pages/Analyzer'; import Analytics from './pages/Analytics'; import Performance from './pages/Performance'; import Explain from './pages/Explain'; import Dwm from './pages/Dwm'
 
 const nav = [['overview', 'Overview', LayoutDashboard], ['simulation', 'Live Simulation', Activity], ['analyzer', 'Transaction Analyzer', ScanSearch],
-  ['analytics', 'Fraud Analytics', LineChart], ['performance', 'Model Performance', Gauge], ['explain', 'Explainability', Brain]] as const
+  ['analytics', 'Fraud Analytics', LineChart], ['performance', 'Model Performance', Gauge], ['explain', 'Explainability', Brain], ['dwm', 'DWM Analytics', Database]] as const
 type Id = typeof nav[number][0]
 
 export default function App() {
@@ -18,6 +18,6 @@ export default function App() {
     <main className="flex-1 min-w-0 p-6 lg:p-8 max-w-[1400px]" key={page}>
       {page === 'overview' && <Overview onOpenSimulation={demo => go('simulation', demo)} />}
       {page === 'simulation' && <Simulation autoDemo={autoDemo} />}
-      {page === 'analyzer' && <Analyzer />}{page === 'analytics' && <Analytics />}{page === 'performance' && <Performance />}{page === 'explain' && <Explain />}
+      {page === 'analyzer' && <Analyzer />}{page === 'analytics' && <Analytics />}{page === 'performance' && <Performance />}{page === 'explain' && <Explain />}{page === 'dwm' && <Dwm />}
     </main></div>)
 }
