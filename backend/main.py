@@ -8,9 +8,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.model_selection import train_test_split
+from backend import dwm
 
 MTF = Path(os.getenv("MTF_DIR", Path(__file__).resolve().parents[1] / "UPI_Fraud_Detector" / "MTF"))
 model = joblib.load(MTF / "models" / "fraud_model.pkl")
+METRICS_FILE = MTF / "results" / "baseline_metrics.json"
+training_metrics = json.loads(METRICS_FILE.read_text()) if METRICS_FILE.exists() else {}
+DECISION_THRESHOLD = float(training_metrics.get("threshold", 0.5))
 df = pd.read_csv(MTF / "dataset" / "transactions.csv")
 FEATURES = [c for c in df.columns if c != "is_fraud"]
 X = df[FEATURES]
@@ -27,7 +31,7 @@ def risk_level(p: float) -> str:  # p in percent, thresholds from src/predict.py
 T = df.copy()
 T.insert(0, "id", np.arange(1, len(T) + 1))
 T["prob"] = (model.predict_proba(X)[:, 1] * 100).round(2)
-T["prediction"] = np.where(model.predict(X) == 1, "FRAUDULENT", "LEGITIMATE")
+T["prediction"] = np.where(model.predict_proba(X)[:, 1] >= DECISION_THRESHOLD, "FRAUDULENT", "LEGITIMATE")
 T["risk"] = T["prob"].map(risk_level)
 
 def shap_values(rows: pd.DataFrame):
@@ -138,56 +142,16 @@ def analytics():
 
 @app.get("/api/model-performance")
 def model_performance():
-    # Same split as src/train_model.py, evaluated with the saved model
     _, Xt, _, yt = train_test_split(X, df.is_fraud, test_size=0.20, random_state=42, stratify=df.is_fraud)
-    yp = model.predict(Xt)
-    tn, fp, fn, tp = confusion_matrix(yt, yp).ravel()
-    return {"model": type(model).__name__, "dataset_size": len(df), "train_size": len(df) - len(Xt), "test_size": len(Xt),
-            "split": "80 / 20", "accuracy": accuracy_score(yt, yp), "precision": precision_score(yt, yp, zero_division=0),
+    p = model.predict_proba(Xt)[:, 1]; yp = (p >= DECISION_THRESHOLD).astype(int)
+    tn, fp, fn, tp = confusion_matrix(yt, yp, labels=[0, 1]).ravel()
+    return {"model": "Tuned Logistic Regression", "dataset_size": len(df), "train_size": len(df)-len(Xt),
+            "test_size": len(Xt), "split": "80 / 20", "threshold": DECISION_THRESHOLD,
+            "accuracy": accuracy_score(yt, yp), "precision": precision_score(yt, yp, zero_division=0),
             "recall": recall_score(yt, yp, zero_division=0), "f1": f1_score(yt, yp, zero_division=0),
             "confusion": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)}}
 
-# --- Model comparison (added) -------------------------------------------------------------------
-# Serves the results saved by src/model_comparison.py. Nothing is retrained or recomputed here, and
-# /api/predict is untouched: Logistic Regression (fraud_model.pkl) remains the one default model.
-COMPARISON_FILE = MTF / "results" / "model_comparison.json"
-DEFAULT_ARTIFACT = MTF / "models" / "fraud_model.pkl"
+@app.get("/api/dwm")
+def dwm_analytics():
+    return {"warehouse": dwm.warehouse(), "olap": dwm.olap(), "mining": dwm.mining()}
 
-@app.get("/api/model-comparison")
-def model_comparison():
-    if not COMPARISON_FILE.exists():
-        raise HTTPException(404, "No saved comparison yet. Run: python UPI_Fraud_Detector/MTF/src/model_comparison.py")
-    data = json.loads(COMPARISON_FILE.read_text())   # small file, re-read so a fresh run shows without a restart
-    served = hashlib.sha256(DEFAULT_ARTIFACT.read_bytes()).hexdigest()
-    evaluated = next((m.get("artifact_sha256") for m in data["models"] if m["id"] == "lr_original"), None)
-    data["serving"] = {"model_id": "lr_original", "artifact": "models/fraud_model.pkl",
-                       "note": "/api/predict and SHAP always use this Logistic Regression; the other models are evaluation-only.",
-                       "artifact_matches_evaluated": evaluated == served}
-    return data
-
-@app.get("/api/explainability")
-def global_importance():
-    sample = X.sample(1000, random_state=7)
-    m = np.abs(shap_values(sample)).mean(axis=0)
-    items = sorted(({"feature": f, "label": LABELS[f], "importance": round(float(v), 4)} for f, v in zip(FEATURES, m)),
-                   key=lambda i: -i["importance"])
-    coefs = dict(zip(FEATURES, model.coef_[0]))
-    for i in items: i["coefficient"] = round(float(coefs[i["feature"]]), 5)
-    return {"method": "mean(|SHAP|) over 1,000 sampled transactions", "features": items}
-
-class Txn(BaseModel):
-    amount: float = Field(ge=0)
-    transactions_last_hour: int = Field(ge=0)
-    account_age_days: int = Field(ge=0)
-    new_device: int = Field(ge=0, le=1)
-    location_changed: int = Field(ge=0, le=1)
-    failed_attempts: int = Field(ge=0)
-    time_since_last_transaction: float = Field(ge=0)
-
-@app.post("/api/predict")
-def predict(t: Txn):
-    row = pd.DataFrame([t.model_dump()])[FEATURES]
-    p = float(model.predict_proba(row)[0, 1] * 100)
-    return {"fraud_probability": round(p, 2), "risk_level": risk_level(p),
-            "prediction": "FRAUDULENT" if model.predict(row)[0] == 1 else "LEGITIMATE",
-            "shap_explanations": contributions(row)}
