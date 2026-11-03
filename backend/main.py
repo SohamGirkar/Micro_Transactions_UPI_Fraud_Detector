@@ -19,7 +19,7 @@ df = pd.read_csv(MTF / "dataset" / "transactions.csv")
 FEATURES = [c for c in df.columns if c != "is_fraud"]
 X = df[FEATURES]
 # Same explainer setup as src/predict.py
-explainer = shap.Explainer(model, X)
+explainer = shap.Explainer(model.predict_proba, X)
 
 LABELS = {"amount": "Transaction amount", "transactions_last_hour": "Transactions in last hour",
           "account_age_days": "Account age", "new_device": "New device", "location_changed": "Location changed",
