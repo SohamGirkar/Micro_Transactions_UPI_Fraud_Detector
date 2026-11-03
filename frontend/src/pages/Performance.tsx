@@ -13,14 +13,6 @@ const steps = [
   'Human explanation',
 ]
 
-// Illustrative values only — not measured model performance.
-const demoMetrics = {
-  accuracy: '91.22%',
-  precision: '90.12%',
-  recall: '95.63%',
-  f1: '90.67%',
-}
-
 export default function Performance() {
   const { data: m, error } = useApi<any>('/api/model-performance')
 
@@ -53,12 +45,12 @@ export default function Performance() {
         sub={`${m.model} · ${num(m.dataset_size)} transactions · ${m.split} train/test split (${num(m.test_size)} held-out)`}
       />
 
-      {/* Top metric cards: illustrative demonstration values */}
+      {/* Top metric cards: measured held-out test metrics */}
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="Accuracy" value={demoMetrics.accuracy} />
-        <Kpi label="Precision" value={demoMetrics.precision} delay={50} />
-        <Kpi label="Recall" value={demoMetrics.recall} delay={100} />
-        <Kpi label="F1 score" value={demoMetrics.f1} delay={150} />
+        <Kpi label="Accuracy" value={`${(m.accuracy * 100).toFixed(2)}%`} />
+        <Kpi label="Precision" value={`${(m.precision * 100).toFixed(2)}%`} delay={50} />
+        <Kpi label="Recall" value={`${(m.recall * 100).toFixed(2)}%`} delay={100} />
+        <Kpi label="F1 score" value={`${(m.f1 * 100).toFixed(2)}%`} delay={150} />
       </div>
 
       {/* Actual confusion matrix and model pipeline */}
